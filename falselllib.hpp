@@ -65,7 +65,7 @@ namespace vector {
 namespace dynamic {
 
 template<class T>
-class Vector : std::vector<T> {
+class Vector : public std::vector<T> {
 	public:
 		Vector(const len_t& len) : std::vector<T>(len) {}
 		void set(const T& item, const len_t& pos) {

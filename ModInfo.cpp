@@ -45,6 +45,7 @@ ModInfoEx::ModInfoEx() : ModInfo() {
 ModInfoEx::~ModInfoEx() {
     if (this->filename) free(const_cast<char*>(this->filename));
     if (this->dependencesNotFound) delete this->dependencesNotFound;
+    if (this->dependencesFound) delete this->dependencesFound;
 }
 ll_bool_t ModInfoEx::operator==(const ModBasicData& dep) const { return this->modData->operator==(dep); }
 ll_str_t ModInfoEx::getFilename() const { return this->filename; }

@@ -88,6 +88,9 @@ int main() {
 	// Dependencias satisfechas
 	/// Extract all mods...
 	modapi::ModVector* modVector = modLoader.getModsToUse();
+	for (auto i : *modVector)
+		delete i;
+	delete modVector;
 
 	return 0;
 }
