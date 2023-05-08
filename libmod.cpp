@@ -145,10 +145,6 @@ ll_int64_t ModLoader::load() {
             numErrors++;
         }
     };
-    //if (mods->len() > 0) {
-    //    for (const std::string* modPathName : *mods) f1(modPathName);
-    //    f1(*mods->end());
-    //}
     mods->foreach(f1);
 
 
@@ -179,11 +175,8 @@ ll_int64_t ModLoader::load() {
             // If it doesnt exists
             //tmp = (ModInfoEx*)&dep[i];
             tmp = &dep[i];
-            if (!this->modsInfo->find(f2f)) {
-            //if (!this->modsInfo->find(&tmp, compareDependence)) {
-                //if (!this->modsInfo->findV<const ModBasicData>(&dep[i], LL_NULLPTR)) {
+            if (!this->modsInfo->find(f2f))
                 info->getDependencesNotFound()->add(&dep[i]);
-            }
             // If dependence is found we need to add to mod dependence list
             else {
 
@@ -197,29 +190,14 @@ ll_int64_t ModLoader::load() {
         }
         pos++;
     };
-    //if (this->modsInfo->len() > 0) {
-    //    for (ModInfoEx** info : *this->modsInfo) f2(*info);
-    //    f2(**this->modsInfo->end());
-    //}
     this->modsInfo->foreach(f2);
 
     // Extract errors from list
-    //for (len_t i = 0; i < listPosErrors.len(); i++)
-    //    this->modsInfo->moveNode(*listPosErrors.get(i) - i, this->modsInfoErr);
     pos = 0;
     listPosErrors.foreach([this, &pos](ll_int32_t& val) {
         this->modsInfo->moveNode(val - pos, this->modsInfoErr);
         pos++;
     });
-
-    /*if (this->modsInfo->len() > 0) {
-        for (const ll_int32_t* posit : listPosErrors) {
-            this->modsInfo->moveNode((*posit) - pos, this->modsInfoErr);
-            pos++;
-        }
-        this->modsInfo->moveNode(**listPosErrors.end() - pos, this->modsInfoErr);
-    }*/
-
     return numErrors;
 }
 ModEventList* ModLoader::getLoadedMods() { return this->modsInfo; }

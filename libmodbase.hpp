@@ -17,17 +17,11 @@
 
 inline const char* dlerror() { return ""; }
 
-/*wchar_t* convertCharArrayToLPCWSTR(const char* charArray) {
-    wchar_t* wString = new wchar_t[4096];
-    MultiByteToWideChar(CP_ACP, 0, charArray, -1, wString, 4096);
-    return wString;
-}*/
-
 #elif defined(__unix__)
 #include <dlfcn.h>
 
 #define load_lib(file) dlopen(file, RTLD_LAZY)
-#define get_lib_address(handle, func) dlsym(handle, funcName)
+#define get_lib_address(handle, funcName) dlsym(handle, funcName)
 #define close_lib(handle) dlclose(handle)
 
 #endif
