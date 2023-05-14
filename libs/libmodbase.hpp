@@ -5,8 +5,8 @@
  *      Author: llanyro
  */
 
-#ifndef LIBMOD_LIBMODBASE_HPP_
-#define LIBMOD_LIBMODBASE_HPP_
+#ifndef LIBMOD_LIBS_LIBMODBASE_HPP_
+#define LIBMOD_LIBS_LIBMODBASE_HPP_
 
 #if defined(_WIN32)
 #include <Windows.h>
@@ -26,4 +26,4 @@ inline const char* dlerror() { return ""; }
 
 #endif
 
-#endif // !LIBMOD_LIBMODBASE_HPP_
+#endif // !LIBMOD_LIBS_LIBMODBASE_HPP_

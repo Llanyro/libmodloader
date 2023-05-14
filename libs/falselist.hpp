@@ -1,15 +1,20 @@
 /*
- * falselllib.hpp
+ * falselist.hpp
  *
  *  Created on: May 7, 2023
  *      Author: llanyro
  */
 
-#ifndef LIBMOD_FALSELLLIB_HPP_
-#define LIBMOD_FALSELLLIB_HPP_
+#ifndef LIBMOD_LIBS_FALSELIST_HPP_
+#define LIBMOD_LIBS_FALSELIST_HPP_
+
+/*
+	This lib replicates internal classes used in this lib from Llanylib
+		using std objects as vector or list
+	Some objects or classes are not use cause lib difference (std vs Llanylib)
+*/
 
 #include <list>
-#include <vector>
 
 typedef void (*event_function)(void*);
 
@@ -18,6 +23,16 @@ struct BasicEvent {
 	event_function onGet = nullptr;
 	event_function onSet = nullptr;
 	event_function onDelete = nullptr;
+
+	BasicEvent(
+		event_function create,
+		event_function get,
+		event_function set,
+		event_function del)
+		: onCreate(create)
+		, onGet(get)
+		, onSet(set)
+		, onDelete(del) {}
 };
 
 namespace llcpp {
@@ -25,17 +40,14 @@ namespace util {
 namespace node {
 
 template<class T, BasicEvent* ev = nullptr>
-class EventNode {
-
-};
+class EventNode {};
 
 } /* namespace node */
-
 namespace list {
 namespace linked {
 
 template<class T, class UnusedNode>
-class LinkedList : std::list<T> {
+class LinkedList : public std::list<T> {
 	public:
 		template<class LambdaFunc>
 		void foreach(LambdaFunc func) {
@@ -61,24 +73,8 @@ class LinkedList : std::list<T> {
 };
 
 } /* namespace linked */
-namespace vector {
-namespace dynamic {
-
-template<class T>
-class Vector : public std::vector<T> {
-	public:
-		Vector(const len_t& len) : std::vector<T>(len) {}
-		void set(const T& item, const len_t& pos) {
-			this->operator[](pos) = item;
-		}
-};
-
-} /* namespace dynamic */
-} /* namespace vector */
-
-
 } /* namespace list */
 } /* namespace util */
 } /* namespace llcpp */
 
-#endif // !LIBMOD_FALSELLLIB_HPP_
+#endif // !LIBMOD_LIBS_FALSELIST_HPP_

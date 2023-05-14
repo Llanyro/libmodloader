@@ -1,5 +1,5 @@
 /*
- * libmod.hpp
+ * ModLoader.hpp
  *
  *  Created on: Feb 22, 2023
  *      Author: llanyro
@@ -8,37 +8,32 @@
 #ifndef LIBMOD_LIBMOD_HPP_
 #define LIBMOD_LIBMOD_HPP_
 
-#include "modapi.hpp"
-#include "libmodincludes.hpp"
-
-#if !defined(FALSE_LL_LIB)
-#define LOAD_EVENTS
-#include "../../../llpc/core/header/eventlib.h"
-#else
-#include "falsellheader.hpp"
-#endif
+#include "libs/libtypes.hpp"
+#include "libs/libmodincludes.hpp"
 
 namespace llcpp {
 namespace modlibcore {
-namespace v2 {
 namespace enums { enum class OSSystem; } /* namespace enums */
 
 class ModInfo;
-class ModInfoEx;
+class ModInfoExtra;
 
 // For event lists
-extern BasicEvent __modListsEvent__;
+extern BasicEvent __modListsEvent__;	// Is used as extern cause i dont want to include here its header
 template<class T, BasicEvent* evn = &__modListsEvent__, class Node = llcpp::util::node::EventNode<T, evn>>
 using EvList as llcpp::util::list::linked::LinkedList<T, Node>;
-using ModEventList as EvList<ModInfoEx*>;
+using ModEventList as EvList<ModInfoExtra*>;
 using ModVector as llcpp::util::list::vector::dynamic::Vector<ModInfo*>;
 
 class ModLoader {
-	private:
+	protected:
 		ll_str_t path;				// Mod path folder
 		enums::OSSystem os;			// Os host
 		ModEventList* modsInfo;		// All mods loaded
 		ModEventList* modsInfoErr;	// All mods "loaded" that contains any error
+	protected:
+		void loadMod();
+		void unloadMod();
 	public:
 		ModLoader(const enums::OSSystem& os, ll_str_t modFolderPath);
 		ModLoader(const enums::OSSystem& os);
@@ -46,6 +41,11 @@ class ModLoader {
 
 		// Loads all phases and returns number of error ocurred
 		ll_int64_t load();
+		//void reloadMod();
+		//void loadMod();
+		//void unloadMod();
+		void clearMods();
+
 		ModEventList* getLoadedMods();
 		ModEventList* getErrorMods();
 
@@ -53,7 +53,6 @@ class ModLoader {
 		ModVector* getModsToUse();
 };
 
-} /* namespace v2 */
 } /* namespace modlibcore */
 } /* namespace llcpp */
 

@@ -1,12 +1,20 @@
 /*
- * falsellheader.hpp
+ * libtypes.hpp
  *
  *  Created on: Feb 28, 2022
  *      Author: llanyro
  */
 
-#ifndef FALSE_LL_HEADER_HPP
-#define FALSE_LL_HEADER_HPP
+#ifndef LIBMOD_LIBS_TYPES_HPP_
+#define LIBMOD_LIBS_TYPES_HPP_
+
+
+#if !defined(FALSE_LL_LIB)
+#include "../../llpc/core/header/llanytypeslib.h"
+#else
+ /*
+	 This header contains reqired types of Llanylib, to been used without it
+ */
 
 typedef int ll_int_t;
 typedef long long ll_longlong_t;
@@ -27,5 +35,9 @@ typedef bool ll_bool_t;
 #define as =
 
 #pragma warning(disable:4996)
+#endif
 
-#endif /* FALSE_LL_HEADER_HPP */
+ // For pointer to libs (Handle)
+typedef void* ll_lib_t;
+
+#endif /* LIBMOD_LIBS_TYPES_HPP_ */
