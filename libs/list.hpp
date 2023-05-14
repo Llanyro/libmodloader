@@ -8,8 +8,6 @@
 #ifndef LIBMOD_LIBS_LIST_HPP_
 #define LIBMOD_LIBS_LIST_HPP_
 
-#define FALSE_LL_LIB
-
 #if !defined(FALSE_LL_LIB)
 #define LOAD_EVENTS
 #include "../../llcpp/util/list/linked/LinkedList.hpp"

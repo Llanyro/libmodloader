@@ -5,8 +5,8 @@
  *      Author: llanyro
  */
 
-#ifndef LIBMOD_MODDATA_HPP_
-#define LIBMOD_MODDATA_HPP_
+#ifndef LIBMOD_OBJECT_MODDATA_HPP_
+#define LIBMOD_OBJECT_MODDATA_HPP_
 
 #include "ModBasicData.hpp"
 // Includes all required classes as incompleted
@@ -15,7 +15,7 @@
 namespace llcpp {
 namespace modlibcore {
 
-class ModCore;
+class ModInfo;
 namespace vector as llcpp::util::list::vector::dynamic;
 
 class ModData : public ModBasicData {
@@ -23,8 +23,8 @@ class ModData : public ModBasicData {
 		vector::Vector<ModBasicData*>* dependences;
 		vector::Vector<ModBasicData*>* dependencesExtra;
 		// Pointers to modcores required
-		vector::Vector<const ModCore*>* dependencesReturned;
-		vector::Vector<const ModCore*>* dependencesExtraReturned;
+		vector::Vector<const ModInfo*>* dependencesReturned;
+		vector::Vector<const ModInfo*>* dependencesExtraReturned;
 	public:
 		ModData(ll_str_t modName, ll_str_t modVersion, const len_t& numDependences, const len_t& numDependencesExtra);
 		virtual ~ModData();
@@ -34,12 +34,12 @@ class ModData : public ModBasicData {
 		// Dependence list exrta no required
 		const vector::Vector<ModBasicData*>* getDependencesExtra() const;
 		// 
-		vector::Vector<const ModCore*>* getDependencesReturned() const;
+		vector::Vector<const ModInfo*>* getDependencesReturned() const;
 		// 
-		vector::Vector<const ModCore*>* getDependencesExtraReturned() const;
+		vector::Vector<const ModInfo*>* getDependencesExtraReturned() const;
 };
 
 } /* namespace modlibcore */
 } /* namespace llcpp */
 
-#endif /* LIBMOD_MODDATA_HPP_ */
+#endif /* LIBMOD_OBJECT_MODDATA_HPP_ */

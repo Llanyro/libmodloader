@@ -5,8 +5,8 @@
  *      Author: llanyro
  */
 
-#ifndef LIBMOD_MODCORE_HPP_
-#define LIBMOD_MODCORE_HPP_
+#ifndef LIBMOD_OBJECT_MODCORE_HPP_
+#define LIBMOD_OBJECT_MODCORE_HPP_
 
 namespace llcpp {
 namespace modlibcore {
@@ -33,4 +33,4 @@ typedef ModCore* (*GetModCore)();
 } /* namespace modlibcore */
 } /* namespace llcpp */
 
-#endif /* LIBMOD_MODCORE_HPP_ */
+#endif /* LIBMOD_OBJECT_MODCORE_HPP_ */

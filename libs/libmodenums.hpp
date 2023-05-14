@@ -5,8 +5,8 @@
  *      Author: llanyro
  */
 
-#ifndef LIBMOD_LIBMODENUM_HPP_
-#define LIBMOD_LIBMODENUM_HPP_
+#ifndef LIBMOD_LIBS_LIBMODENUM_HPP_
+#define LIBMOD_LIBS_LIBMODENUM_HPP_
 
 namespace llcpp {
 namespace modlibcore {
@@ -34,4 +34,4 @@ enum class StatusID {
 } /* namespace modlibcore */
 } /* namespace llcpp */
 
-#endif // !LIBMOD_LIBMODENUM_HPP_
+#endif // !LIBMOD_LIBS_LIBMODENUM_HPP_

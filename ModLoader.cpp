@@ -136,9 +136,9 @@ modlib::ModInfoExtra* getModInfoEx(const std::string& mod) {
                 const modlib::vector::Vector<modlib::ModBasicData*>* 
                     data_arr_ex = data->getDependencesExtra();
 
-                modlib::vector::Vector<const modlib::ModCore*>*
+                modlib::vector::Vector<const modlib::ModInfo*>*
                     data_arr_ret = data->getDependencesReturned();
-                modlib::vector::Vector<const modlib::ModCore*>*
+                modlib::vector::Vector<const modlib::ModInfo*>*
                     data_arr_ex_ret = data->getDependencesExtraReturned();
 
                 // If mod has dependedces, but vector to store it is different size
@@ -236,14 +236,14 @@ ll_int64_t ModLoader::load() {
         const modlib::vector::Vector<modlib::ModBasicData*>* data_arr =
             data->getDependences();
         // Get dependence return
-        modlib::vector::Vector<const modlib::ModCore*>* data_arr_ret =
+        modlib::vector::Vector<const modlib::ModInfo*>* data_arr_ret =
             data->getDependencesReturned();
 
         // Get dependence list
         const modlib::vector::Vector<modlib::ModBasicData*>* data_arr_ex =
             data->getDependencesExtra();
         // Get dependence return
-        modlib::vector::Vector<const modlib::ModCore*>* data_arr_ex_ret =
+        modlib::vector::Vector<const modlib::ModInfo*>* data_arr_ex_ret =
             data->getDependencesExtraReturned();
 
 
@@ -253,14 +253,14 @@ ll_int64_t ModLoader::load() {
         auto f2f = 
             [&info, this] 
             (const modlib::vector::Vector<modlib::ModBasicData*>* vec,
-            modlib::vector::Vector<const modlib::ModCore*>* ret) {
+            modlib::vector::Vector<const modlib::ModInfo*>* ret) {
             const ModBasicData* tmp = LL_NULLPTR;
-            const ModCore* tmp_core = LL_NULLPTR;
+            const ModInfo* tmp_core = LL_NULLPTR;
             // Returns true if found
             // Also, tmp_core should point to core
             auto f2f2 = [&tmp, &tmp_core](ModInfoExtra* info) {
                 if (info->operator==(*tmp)) {
-                    tmp_core = info->getModCore();
+                    tmp_core = info;
                     return true;
                 }
                 else

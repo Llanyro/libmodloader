@@ -26,13 +26,7 @@ ModInfoExtra::ModInfoExtra()
     , statusID(enums::StatusID::NOT_INITIALITED)
     , dependencesNotFound(new List<const ModBasicData*>())
 {}
-ModInfoExtra::~ModInfoExtra() {
-    if (this->filename) free(const_cast<char*>(this->filename));
-    if (this->dependencesNotFound) delete this->dependencesNotFound;
-
-    this->filename = LL_NULLPTR;
-    this->dependencesNotFound = LL_NULLPTR;
-}
+ModInfoExtra::~ModInfoExtra() { this->clearSimple(); }
 ll_bool_t ModInfoExtra::operator==(const ModBasicData& dep) const {
     return this->modCore->getModBasicData()->operator==(dep);
 }
@@ -43,14 +37,14 @@ void ModInfoExtra::setStatusID(const enums::StatusID& status) { this->statusID =
 List<const ModBasicData*>* ModInfoExtra::getDependencesNotFound() { return this->dependencesNotFound; }
 
 ModInfo* ModInfoExtra::extractBasicInfo() {
-    ModInfo* basic = new ModInfo();
-    basic->setModCore(this->modCore);
-    basic->setModHandle(this->modHandle);
-
-    this->modCore = LL_NULLPTR;
-    this->modHandle = LL_NULLPTR;
-
-    return basic;
+    this->clearSimple();
+    return this;
+}
+void ModInfoExtra::clearSimple() {
+    if (this->filename) free(const_cast<char*>(this->filename));
+    if (this->dependencesNotFound) delete this->dependencesNotFound;
+    this->filename = LL_NULLPTR;
+    this->dependencesNotFound = LL_NULLPTR;
 }
 
 } /* namespace modlibcore */

@@ -5,8 +5,8 @@
  *      Author: llanyro
  */
 
-#ifndef LIBMOD_MODINFOEXTRA_HPP_
-#define LIBMOD_MODINFOEXTRA_HPP_
+#ifndef LIBMOD_OBJECT_MODINFOEXTRA_HPP_
+#define LIBMOD_OBJECT_MODINFOEXTRA_HPP_
 
 #include "ModInfo.hpp"
 #include "../libs/libmodincludes.hpp"
@@ -41,9 +41,10 @@ class ModInfoExtra : public ModInfo {
 		List<const ModBasicData*>* getDependencesNotFound();
 		// Once data extracted, this object will be invalid, so delete it
 		ModInfo* extractBasicInfo();
+		void clearSimple();
 };
 
 } /* namespace modlibcore */
 } /* namespace llcpp */
 
-#endif // !LIBMOD_MODINFOEXTRA_HPP_
+#endif // !LIBMOD_OBJECT_MODINFOEXTRA_HPP_

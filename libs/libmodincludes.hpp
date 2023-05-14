@@ -5,8 +5,8 @@
  *      Author: llanyro
  */
 
-#ifndef LIBMOD_LIBMODINCLUDES_HPP_
-#define LIBMOD_LIBMODINCLUDES_HPP_
+#ifndef LIBMOD_LIBS_LIBMODINCLUDES_HPP_
+#define LIBMOD_LIBS_LIBMODINCLUDES_HPP_
 
 struct BasicEvent;
 
@@ -37,4 +37,4 @@ class Vector;
 
 } /* namespace llcpp */
 
-#endif // !LIBMOD_LIBMODINCLUDES_HPP_
+#endif // !LIBMOD_LIBS_LIBMODINCLUDES_HPP_

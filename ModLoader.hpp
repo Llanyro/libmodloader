@@ -5,8 +5,8 @@
  *      Author: llanyro
  */
 
-#ifndef LIBMOD_LIBMOD_HPP_
-#define LIBMOD_LIBMOD_HPP_
+#ifndef LIBMOD_MODLOADER_HPP_
+#define LIBMOD_MODLOADER_HPP_
 
 #include "libs/libtypes.hpp"
 #include "libs/libmodincludes.hpp"
@@ -56,4 +56,4 @@ class ModLoader {
 } /* namespace modlibcore */
 } /* namespace llcpp */
 
-#endif /* LIBMOD_LIBMOD_HPP_ */
+#endif /* LIBMOD_MODLOADER_HPP_ */

@@ -23,19 +23,27 @@ ModData::ModData(ll_str_t modName, ll_str_t modVersion, const len_t& numDependen
 {
 	if (numDependences > 0) {
 		this->dependences = new vector::Vector<ModBasicData*>(numDependences);
-		this->dependencesReturned = new vector::Vector<const ModCore*>(numDependences);
+		this->dependencesReturned = new vector::Vector<const ModInfo*>(numDependences);
 	}
 
 	if (numDependencesExtra > 0) {
 		this->dependencesExtra = new vector::Vector<ModBasicData*>(numDependences);
-		this->dependencesExtraReturned = new vector::Vector<const ModCore*>(numDependences);
+		this->dependencesExtraReturned = new vector::Vector<const ModInfo*>(numDependences);
 	}
 }
 ModData::~ModData() {
-	if (this->dependences) delete this->dependences;
-	if (this->dependencesExtra) delete this->dependencesExtra;
-	if (this->dependencesReturned) delete this->dependences;
-	if (this->dependencesExtraReturned) delete this->dependencesExtra;
+	if (this->dependences) {
+		for (auto i : *this->dependences)
+			delete i;
+		delete this->dependences;
+	}
+	if (this->dependencesExtra) {
+		for (auto i : *this->dependencesExtra)
+			delete i;
+		delete this->dependencesExtra;
+	}
+	if (this->dependencesReturned) delete this->dependencesReturned;
+	if (this->dependencesExtraReturned) delete this->dependencesExtraReturned;
 
 	this->dependences = LL_NULLPTR;
 	this->dependencesExtra = LL_NULLPTR;
@@ -48,10 +56,10 @@ const vector::Vector<ModBasicData*>* llcpp::modlibcore::ModData::getDependences(
 const vector::Vector<ModBasicData*>* llcpp::modlibcore::ModData::getDependencesExtra() const {
 	return this->dependencesExtra;
 }
-vector::Vector<const ModCore*>* llcpp::modlibcore::ModData::getDependencesReturned() const {
+vector::Vector<const ModInfo*>* llcpp::modlibcore::ModData::getDependencesReturned() const {
 	return this->dependencesReturned;
 }
-vector::Vector<const ModCore*>* llcpp::modlibcore::ModData::getDependencesExtraReturned() const {
+vector::Vector<const ModInfo*>* llcpp::modlibcore::ModData::getDependencesExtraReturned() const {
 	return this->dependencesExtraReturned;
 }
 

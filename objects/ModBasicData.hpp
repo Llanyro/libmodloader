@@ -5,8 +5,8 @@
  *      Author: llanyro
  */
 
-#ifndef LIBMOD_MODBASICDATA_HPP_
-#define LIBMOD_MODBASICDATA_HPP_
+#ifndef LIBMOD_OBJECT_MODBASICDATA_HPP_
+#define LIBMOD_OBJECT_MODBASICDATA_HPP_
 
 //#define FALSE_LL_LIB
 
@@ -38,4 +38,4 @@ class ModBasicData {
 } /* namespace modlibcore */
 } /* namespace llcpp */
 
-#endif /* LIBMOD_MODBASICDATA_HPP_ */
+#endif /* LIBMOD_OBJECT_MODBASICDATA_HPP_ */

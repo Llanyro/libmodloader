@@ -1,7 +1,6 @@
 #!/bin/bash
 
 DIR=output;
-DIR_LIB_EXT="/export/home/WECDIS/bin/newlib"
 
 if [ -d "$DIR" ]; then
     rm -rf $DIR
@@ -31,8 +30,3 @@ g++ -o $DIR/modtester main.cpp \
                         $DIR/ModInfo.o \
                         $DIR/libmod.o \
                         -ldl
-
-
-cp $DIR/modtester $DIR_LIB_EXT/modtester
-cp $DIR/modapi.o $DIR_LIB_EXT/modapi.o
-cp $DIR/libmod.so $DIR_LIB_EXT/libmod.so

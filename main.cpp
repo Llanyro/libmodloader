@@ -4,20 +4,6 @@
  *  Created on: Feb 22, 2023
  *      Author: llanyro
  */
-
-//#define FALSE_LL_LIB
-//#include "libmod.hpp"
-//#include "libmodenums.hpp"
-//#include "ModInfo.hpp"
-//
-//#if !defined(FALSE_LL_LIB)
-//#define LOAD_EVENTS
-//#include "../llcpp/util/list/linked/LinkedList.hpp"
-//#include "../llcpp/util/list/vector/Vector.hpp"
-//#else
-//#include "falselllib.hpp"
-//#endif
-
 #include "ModLoader.hpp"
 // Libs
 #include "libs/libmodenums.hpp"
@@ -25,6 +11,9 @@
 #include "objects/ModInfoExtra.hpp"
 #include "objects/ModCore.hpp"
 #include "objects/ModData.hpp"
+
+// Testing
+#include "test/IInterface.hpp"
 
 // External libs
 #include "libs/list.hpp"
@@ -115,6 +104,24 @@ void printModErrors(modlib::ModInfoExtra* mod) {
 
 */
 
+typedef modlib::test::IInterface* (*GetInterface)();
+typedef void (*__init__)(void);
+
+template<class T, class Smtin>
+void executeFunc(const modlib::ModInfo* info, const char* functionName, Smtin lamb) {
+	T func =
+		(T)info->getFunction(functionName);
+	if (func)
+		lamb(func);
+	else {
+		const modlib::ModData* data = info->getModCore()->getModData();
+		printf("*** Mod: %s::%s does not have '%s' ***\n", 
+			data->getModName(), 
+			data->getModVersion(), 
+			functionName);
+	}
+}
+
 int main() {
 	modlib::ModLoader modLoader(modlib::enums::OSSystem::WINDOWS);
 	ll_int64_t errors = modLoader.load();
@@ -128,16 +135,40 @@ int main() {
 		return -1;
 	}
 
+	putchar('\n');
+
 	// Dependencias satisfechas
 	/// Extract all mods...
 	modlib::ModVector* modVector = modLoader.getModsToUse();
 
-	// Do something with mods
+	auto lambda_interface = [](GetInterface in) {
+		modlib::test::IInterface* iface = in();
 
+		printf("Initial value: %i\n", iface->get());
 
+		iface->add(17);
+		printf("Sum 17: %i\n", iface->get());
 
+		iface->sub(3);
+		printf("Sub 3: %i\n", iface->get());
+
+		iface->printText();
+	};
+
+	// Execute getInterface in all mods and execute some functions
 	for (auto i : *modVector)
-		delete i;
+		executeFunc<GetInterface>(i, "getInterface", lambda_interface);
+
+	// Execute __init__ in all mods
+	for (auto i : *modVector)
+		executeFunc<__init__>(i, "__init__", [](__init__ in) { in(); });
+
+	// Execute getInterface in all mods and execute some functions
+	for (auto i : *modVector)
+		executeFunc<GetInterface>(i, "getInterface", lambda_interface);
+
+	//for (auto i : *modVector)
+	//	delete i;
 	delete modVector;
 
 	return 0;

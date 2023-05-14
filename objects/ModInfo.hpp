@@ -5,8 +5,8 @@
  *      Author: llanyro
  */
 
-#ifndef LIBMOD_MODINFO_HPP_
-#define LIBMOD_MODINFO_HPP_
+#ifndef LIBMOD_OBJECT_MODINFO_HPP_
+#define LIBMOD_OBJECT_MODINFO_HPP_
 
 #include "../libs/libtypes.hpp"
 
@@ -33,4 +33,4 @@ class ModInfo {
 } /* namespace modlibcore */
 } /* namespace llcpp */
 
-#endif // !LIBMOD_MODINFO_HPP_
+#endif // !LIBMOD_OBJECT_MODINFO_HPP_
