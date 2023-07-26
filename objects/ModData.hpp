@@ -9,34 +9,34 @@
 #define LIBMOD_OBJECT_MODDATA_HPP_
 
 #include "ModBasicData.hpp"
-// Includes all required classes as incompleted
-#include "../libs/libmodincludes.hpp"
+
+#include "../libs/libshare.hpp"
+
+#include <vector>
 
 namespace llcpp {
 namespace modlibcore {
-
 class ModInfo;
-namespace vector as llcpp::util::list::vector::dynamic;
 
-class ModData : public ModBasicData {
+class LL_SHARED_LIB ModData : public ModBasicData {
 	protected:
-		vector::Vector<ModBasicData*>* dependences;
-		vector::Vector<ModBasicData*>* dependencesExtra;
+		std::vector<ModBasicData*> dependencesRequired;
+		std::vector<ModBasicData*> dependencesOptional;
 		// Pointers to modcores required
-		vector::Vector<const ModInfo*>* dependencesReturned;
-		vector::Vector<const ModInfo*>* dependencesExtraReturned;
+		std::vector<const ModInfo*> dependencesRequiredReturned;
+		std::vector<const ModInfo*> dependencesOptionalReturned;
 	public:
-		ModData(ll_str_t modName, ll_str_t modVersion, const len_t& numDependences, const len_t& numDependencesExtra);
-		virtual ~ModData();
+		ModData(std::string&& modName, std::string&& modVersion);
+		~ModData();
 
-		// Dependence list
-		const vector::Vector<ModBasicData*>* getDependences() const;
-		// Dependence list exrta no required
-		const vector::Vector<ModBasicData*>* getDependencesExtra() const;
-		// 
-		vector::Vector<const ModInfo*>* getDependencesReturned() const;
-		// 
-		vector::Vector<const ModInfo*>* getDependencesExtraReturned() const;
+		void addDependencesRequired(ModBasicData* dependence);
+		void addDependencesOptional(ModBasicData* dependence);
+
+		const std::vector<ModBasicData*>& getDependencesRequired() const;
+		const std::vector<ModBasicData*>& getDependencesOptional() const;
+
+		std::vector<const ModInfo*>& getDependenceRequiredReturned();
+		std::vector<const ModInfo*>& getDependenceOptionalReturned();
 };
 
 } /* namespace modlibcore */

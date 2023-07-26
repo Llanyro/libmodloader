@@ -8,26 +8,39 @@
 #ifndef LIBMOD_OBJECT_MODINFO_HPP_
 #define LIBMOD_OBJECT_MODINFO_HPP_
 
-#include "../libs/libtypes.hpp"
+#include "../libs/libshare.hpp"
+
+ // For pointer to libs (Handle)
+typedef void* ll_lib_t;
 
 namespace llcpp {
 namespace modlibcore {
-namespace enums { enum class StatusID; } /* namespace enums */
 
 class ModCore;
 
-class ModInfo {
+/*
+*	This if a object to proxy access to the mod(library)
+*		that you created
+*	You can ask for a function and it will return a pointer of the memory function
+*	I will not explain here how it works because a comment in not enough
+* 
+*	Also this class is not virtual!
+*	Do not use it as an interface!
+*/
+class LL_SHARED_LIB ModInfo {
 	protected:
-		ll_lib_t modHandle;								// Pointer to lib
-		const ModCore* modCore;							// Core from mod
+		ll_lib_t modHandle;		// Pointer to lib
+		ModCore* modCore;		// Reference mod core
 	public:
 		ModInfo();
-		virtual ~ModInfo();
-		void* getFunction(ll_str_t functionName) const;
+		~ModInfo();
+
+		void* getFunction(const char* const functionName) const;
 
 		void setModHandle(ll_lib_t handle);
-		void setModCore(const ModCore* modCore);
+		void setModCore(ModCore* modCore);
 		const ModCore* getModCore() const;
+		ModCore* getModCore();
 };
 
 } /* namespace modlibcore */

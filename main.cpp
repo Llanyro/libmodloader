@@ -15,16 +15,12 @@
 // Testing
 #include "test/IInterface.hpp"
 
-// External libs
-#include "libs/list.hpp"
-#include "libs/vector.hpp"
-
 // System
 #include <iostream>
 
-namespace modlib as llcpp::modlibcore;
+namespace modlib = llcpp::modlibcore;
 
-ll_str_t getStatusID(const modlib::enums::StatusID& id) {
+const char* getStatusID(const modlib::enums::StatusID& id) {
 	switch (id) {
 		case modlib::enums::StatusID::NOT_INITIALITED:
 			return "NOT_INITIALITED";
@@ -40,10 +36,6 @@ ll_str_t getStatusID(const modlib::enums::StatusID& id) {
 			return "ERROR_MOD_NAME_NULL";
 		case modlib::enums::StatusID::ERROR_MOD_VERSION_NULL:
 			return "ERROR_MOD_VERSION_NULL";
-		case modlib::enums::StatusID::ERROR_DEPENDENCES_NO_VALID_CORRELATION_1:
-			return "ERROR_DEPENDENCES_NO_VALID_CORRELATION_1";
-		case modlib::enums::StatusID::ERROR_DEPENDENCES_NO_VALID_CORRELATION_2:
-			return "ERROR_DEPENDENCES_NO_VALID_CORRELATION_2";
 		default:
 			return "default";
 	}

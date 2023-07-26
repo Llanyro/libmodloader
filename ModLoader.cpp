@@ -14,143 +14,66 @@
 #include "objects/ModCore.hpp"
 #include "objects/ModInfoExtra.hpp"
 
-#include "libs/vector.hpp"
-#include "libs/list.hpp"
-
-#pragma region Includes
-
-/// System includes
-
-// If cant include or use std::filesystem
-#if !(__cplusplus < 201703L)
-#include <dirent.h>
-#define LL_FILESYSTEM_NOT_SUPPORTED_
-#else
 #include <filesystem>
-#endif
-
 #include <string>
 
-#pragma endregion
+#if defined(_WIN32) or defined(_WIN64)
+#include "windows/pch.h"
+#endif // _WIN32 || _WIN64
 
-namespace modlib as llcpp::modlibcore;
-namespace fs as std::filesystem;
-
-#pragma region NotClassFunctions
-void doNothing(void*) {}
-
-#if !defined(FALSE_LL_LIB)
-void deleteModInfoEx(void* a) {
-    if (a != LL_NULLPTR)
-        delete* reinterpret_cast<modlib::ModInfoExtra**>(a);
-}
-#else
-void deleteModInfoEx(void* a) {
-    if (a != LL_NULLPTR)
-        delete reinterpret_cast<modlib::ModInfoExtra*>(a);
-}
-#endif
-
-// Stored inside namespaces to not be called wrongly
-namespace llcpp {
-namespace modlibcore {
-
-// For event list
-BasicEvent __modListsEvent__ = {
-    doNothing,
-    doNothing,
-    doNothing,
-    deleteModInfoEx
-};
-
-} /* namespace modlibcore */
-} /* namespace llcpp */
+namespace modlib = llcpp::modlibcore;
 
 // For reading all files by estension in a folder
-#if defined(FILESYSTEM_NOT_SUPPORTED)
-List<std::string>* loadModFolder(ll_str_t modFolderPath, ll_str_t ext) {
-    List<std::string>* l = new List<std::string>();
-    DIR* dir;
-    struct dirent* entry;
-    if ((dir = opendir(modFolderPath)) != NULL) {
-        while ((entry = readdir(dir)) != NULL) {
-            std::string filename = entry->d_name;
-            size_t pos = filename.find_last_of(".");
-            if (pos != std::string::npos && filename.substr(pos) == ext) {
-                std::string str = std::string(modFolderPath) + "/" + filename;
-                l->push_back(str);
-            }
-        }
-        closedir(dir);
-    }
-    else {
-        fprintf(stderr, "Error: could not open directory %s\n", modFolderPath);
-    }
-    return l;
-}
-#else
-List<std::string>* loadModFolder(ll_str_t modFolderPath, ll_str_t ext) {
-    List<std::string>* l = new List<std::string>();
-    if (fs::exists(modFolderPath))
-        for (const auto& entry : fs::directory_iterator(modFolderPath))
+std::vector<std::string>&& loadModFolder(const std::string& modFolderPath, const std::string& ext) {
+    std::vector<std::string> l;
+    if (std::filesystem::exists(modFolderPath))
+        for (const auto& entry : std::filesystem::directory_iterator(modFolderPath))
             if (entry.path().extension() == ext) {
                 auto a = entry.path().native();
-                l->add(std::string(a.begin(), a.end()));
+                l.push_back(std::string(a.begin(), a.end()));
             }
-    return l;
+    return std::move(l);
 }
-#endif
 
 modlib::ModInfoExtra* getModInfoEx(const std::string& mod) {
     modlib::ModInfoExtra* info = new modlib::ModInfoExtra();
     info->setStatusID(modlib::enums::StatusID::OK);
-    info->setFilename(strdup(mod.c_str()));
+    info->setFilename(mod);
 
-    ll_lib_t hModule = load_lib(info->getFilename());
-    if (hModule == LL_NULLPTR) {
+    ll_lib_t hModule = load_lib(info->getFilename().c_str());
+    if (!hModule) {
         info->setStatusID(modlib::enums::StatusID::ERROR_OPENING_MOD);
         fprintf(stderr, "%s\n", dlerror());
         return info;
     }
     info->setModHandle(hModule);
 
-    modlib::GetModCore getModCore = (modlib::GetModCore)get_lib_address(hModule, "getModCore");
-    if (getModCore == LL_NULLPTR) {
+    modlib::GetModCore getModCore = (modlib::GetModCore)get_lib_address(hModule, GET_MOD_CORE);
+    if (!getModCore) {
         info->setStatusID(modlib::enums::StatusID::ERROR_GET_MOD_CORE);
         close_lib(hModule);
         return info;
     }
 
-    const modlib::ModCore* core = getModCore();
+    modlib::ModCore* core = getModCore();
     if (core) {
         info->setModCore(core);
-        const modlib::ModData* data = core->getModData();
+        modlib::ModData* data = core->getModData();
         if (data) {
-            if (!data->getModName()) info->setStatusID(
-                modlib::enums::StatusID::ERROR_MOD_NAME_NULL);
-            elif(!data->getModVersion()) info->setStatusID(
-                modlib::enums::StatusID::ERROR_MOD_VERSION_NULL);
+            if (data->getModName().empty())
+                info->setStatusID(modlib::enums::StatusID::ERROR_MOD_NAME_NULL);
+            else if(data->getModVersion().empty())
+                info->setStatusID(modlib::enums::StatusID::ERROR_MOD_VERSION_NULL);
             else {
-                const modlib::vector::Vector<modlib::ModBasicData*>* 
-                    data_arr = data->getDependences();
-                const modlib::vector::Vector<modlib::ModBasicData*>* 
-                    data_arr_ex = data->getDependencesExtra();
+                const std::vector<modlib::ModBasicData*>& data_arr = data->getDependencesRequired();
+                const std::vector<modlib::ModBasicData*>& data_arr_ex = data->getDependencesOptional();
 
-                modlib::vector::Vector<const modlib::ModInfo*>*
-                    data_arr_ret = data->getDependencesReturned();
-                modlib::vector::Vector<const modlib::ModInfo*>*
-                    data_arr_ex_ret = data->getDependencesExtraReturned();
+                std::vector<const modlib::ModInfo*>& data_arr_ret = data->getDependenceRequiredReturned();
+                std::vector<const modlib::ModInfo*>& data_arr_ex_ret = data->getDependenceOptionalReturned();
 
-                // If mod has dependedces, but vector to store it is different size
-                if(data_arr && data_arr_ret)
-                    if(data_arr->size() != data_arr_ret->size())
-                        info->setStatusID(
-                            modlib::enums::StatusID::ERROR_DEPENDENCES_NO_VALID_CORRELATION_1);
-
-                if(data_arr_ex && data_arr_ex_ret)
-                    if(data_arr_ex->size() != data_arr_ex_ret->size())
-                        info->setStatusID(
-                            modlib::enums::StatusID::ERROR_DEPENDENCES_NO_VALID_CORRELATION_2);
+                // Prepare return vector to return data
+                if (data_arr.size() > 0) data_arr_ret.reserve(data_arr.size());
+                if (data_arr_ex.size() > 0) data_arr_ex_ret.reserve(data_arr_ex.size());
             }
         }
         else info->setStatusID(modlib::enums::StatusID::ERROR_MOD_DATA_NULL);
@@ -166,57 +89,43 @@ namespace llcpp {
 namespace modlibcore {
 
 void ModLoader::clearMods() {
-    #if !defined(FALSE_LL_LIB)
-    if (this->modsInfo) delete this->modsInfo;
-    if (this->modsInfoErr) delete this->modsInfoErr;
-    #else
-    if (this->modsInfo) {
-        this->modsInfo->foreach(deleteModInfoEx);
-        delete this->modsInfo;
-    }
-    if (this->modsInfoErr) {
-        this->modsInfoErr->foreach(deleteModInfoEx);
-        delete this->modsInfoErr;
-    }
-    #endif
-
-    this->modsInfo = LL_NULLPTR;
-    this->modsInfoErr = LL_NULLPTR;
-    this->path = LL_NULLPTR;
-    this->os = enums::OSSystem::NULL_OS;
+    for (auto& i : this->modsInfo) delete i;
+    for (auto& i : this->modsInfoErr) delete i;
 }
 
-ModLoader::ModLoader(const enums::OSSystem& os, ll_str_t modFolderPath)
-    : os(os), path(modFolderPath)
-    , modsInfo(new ModEventList())
-    , modsInfoErr(new ModEventList())
+ModLoader::ModLoader(std::string modFolderPath)
+    : path(std::move(modFolderPath))
+    , modsInfo()
+    , modsInfoErr()
 {}
-ModLoader::ModLoader(const enums::OSSystem& os) : ModLoader(os, "./mods") {}
 ModLoader::~ModLoader() { this->clearMods(); }
 
-ll_int64_t ModLoader::load() {
-    ll_int64_t numErrors = 0;
+std::size_t ModLoader::load() {
+    std::size_t numErrors = 0;
 
     // Get all mods of folder
-    List<std::string>* mods = loadModFolder(this->path, 
-        (this->os == enums::OSSystem::WINDOWS ? ".dll" : ".so")
-    );
+    #if defined(_WIN32) or defined(_WIN64)
+    std::vector<std::string> mods(loadModFolder(this->path, ".dll"));
+    #else
+    std::vector<std::string> mods(loadModFolder(this->path, ".so"));
+    #endif // _WIN32 || _WIN64
 
     // Get info of all mods loaded
     auto getModsInfoLambda = [this, &numErrors](const std::string& modPathName) {
         fprintf(stderr, "%s\n", modPathName.c_str());
         ModInfoExtra* info = getModInfoEx(modPathName);
-        if (info->getStatusID() == enums::StatusID::OK) this->modsInfo->add(info);
+        if (info->getStatusID() == enums::StatusID::OK)
+            this->modsInfo.push_back(info);
         else {
-            this->modsInfoErr->add(info);
+            this->modsInfoErr.push_back(info);
             numErrors++;
         }
     };
-    mods->foreach(getModsInfoLambda);
-
+    for (auto& i : mods)
+        getModsInfoLambda(i);
 
     // Mods path is needed no more
-    delete mods;
+    mods.clear();
 
     // Check duplicates
     /// No, user needs to check if he wants
@@ -224,38 +133,29 @@ ll_int64_t ModLoader::load() {
     /// Same modName? Same version? Same dependences?
 
     // Check dependences
-    List<ll_int32_t> listPosErrors;
-    ll_int32_t pos = 0;
+    std::vector<std::size_t> listPosErrors;
+    std::size_t pos = 0;
     auto dependenceCheckerLambda =
         [this, &numErrors, &pos, &listPosErrors]
         (ModInfoExtra* info) {
         // Get mod data to get dependences
-        const ModData* data = info->getModCore()->getModData();
+        ModData* data = info->getModCore()->getModData();
 
-        // Get dependence list
-        const modlib::vector::Vector<modlib::ModBasicData*>* data_arr =
-            data->getDependences();
-        // Get dependence return
-        modlib::vector::Vector<const modlib::ModInfo*>* data_arr_ret =
-            data->getDependencesReturned();
+        const std::vector<modlib::ModBasicData*>& data_arr = data->getDependencesRequired();
+        std::vector<const modlib::ModInfo*>& data_arr_ret = data->getDependenceRequiredReturned();
 
-        // Get dependence list
-        const modlib::vector::Vector<modlib::ModBasicData*>* data_arr_ex =
-            data->getDependencesExtra();
-        // Get dependence return
-        modlib::vector::Vector<const modlib::ModInfo*>* data_arr_ex_ret =
-            data->getDependencesExtraReturned();
-
+        const std::vector<modlib::ModBasicData*>& data_arr_ex = data->getDependencesOptional();
+        std::vector<const modlib::ModInfo*>& data_arr_ex_ret = data->getDependenceOptionalReturned();
 
         // Check dependences and store it
         // If found -> store in mod return
         // If not found -> store in error list
         auto f2f = 
             [&info, this] 
-            (const modlib::vector::Vector<modlib::ModBasicData*>* vec,
-            modlib::vector::Vector<const modlib::ModInfo*>* ret) {
-            const ModBasicData* tmp = LL_NULLPTR;
-            const ModInfo* tmp_core = LL_NULLPTR;
+            (const std::vector<modlib::ModBasicData*>& vec,
+            std::vector<const modlib::ModInfo*>& ret) {
+            const ModBasicData* tmp = nullptr;
+            const ModInfo* tmp_core = nullptr;
             // Returns true if found
             // Also, tmp_core should point to core
             auto f2f2 = [&tmp, &tmp_core](ModInfoExtra* info) {
@@ -266,54 +166,56 @@ ll_int64_t ModLoader::load() {
                 else
                     return false;
             };
-
-            for (len_t i = 0; i < vec->size(); i++) {
-                tmp = *vec->cget(i);
-                if (!this->modsInfo->find(f2f2))
-                    info->getDependencesNotFound()->add(tmp);
-                // If dependence is found we need to add to mod dependence list
-                else
-                    ret->set(tmp_core, i);
+            for (auto& i : vec) {
+                auto it = std::find_if(this->modsInfo.begin(), this->modsInfo.end(), f2f2);
+                if (it != this->modsInfo.end())
+                    ret.push_back(tmp_core);
+                else {
+                    ret.push_back(nullptr);
+                    info->addDependencesNotFound(i);
+                }
             }
         };
 
-        if(data_arr && data_arr_ret)
+        if(!data_arr.empty())
             f2f(data_arr, data_arr_ret);
-        if (data_arr_ex && data_arr_ex_ret)
+        if (!data_arr_ex.empty())
             f2f(data_arr_ex, data_arr_ex_ret);
 
 
         // If an error happened
-        if (info->getDependencesNotFound()->len() > 0) {
-            listPosErrors.add(pos);
+        if (!info->getDependencesNotFound().empty()) {
+            listPosErrors.push_back(pos);
             numErrors++;
         }
         pos++;
     };
-    this->modsInfo->foreach(dependenceCheckerLambda);
+    for(auto& i : this->modsInfo)
+        dependenceCheckerLambda(i);
 
     // Extract errors from list
     pos = 0;
-    listPosErrors.foreach([this, &pos](ll_int32_t& val) {
-        this->modsInfo->moveNode(val - pos, this->modsInfoErr);
-        pos++;
-    });
+    for (auto& i : listPosErrors) {
+        // Get iterator of mod
+        auto it = this->modsInfo.begin() + i - pos;
+        this->modsInfoErr.insert(this->modsInfoErr.end(), std::move(*it));
+        this->modsInfo.erase(it);
+    }
     return numErrors;
 }
 
-ModEventList* ModLoader::getLoadedMods() { return this->modsInfo; }
-ModEventList* ModLoader::getErrorMods() { return this->modsInfoErr; }
+const std::vector<const ModInfoExtra*>& ModLoader::getLoadedMods() const {
+    return reinterpret_cast<const std::vector<const ModInfoExtra*>&>((this->modsInfo));
+}
+const std::vector<const ModInfoExtra*>& ModLoader::getErrorMods() const {
+    return reinterpret_cast<const std::vector<const ModInfoExtra*>&>((this->modsInfoErr));
+}
 
-ModVector* ModLoader::getModsToUse() {
-    ModVector* v = new ModVector(this->modsInfo->len());
-    len_t pos = 0;
-
-    this->modsInfo->foreach([&v, &pos](ModInfoExtra* info) {
-        v->set(info->extractBasicInfo(), pos);
-        pos++;
-    });
-
-    return v;
+std::vector<const ModInfo*>&& ModLoader::getModsToUse() {
+    std::vector<const ModInfo*> v;
+    for (auto& i : this->modsInfo)
+        v.push_back(i);
+    return std::move(v);
 }
 
 } /* namespace modlibcore */

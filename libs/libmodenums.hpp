@@ -26,8 +26,6 @@ enum class StatusID {
 	ERROR_MOD_DATA_NULL,							// Mod core returned data null pointer
 	ERROR_MOD_NAME_NULL,							// 
 	ERROR_MOD_VERSION_NULL,							// 
-	ERROR_DEPENDENCES_NO_VALID_CORRELATION_1,		// dependences.size() != dependencesReturned.size()
-	ERROR_DEPENDENCES_NO_VALID_CORRELATION_2,		// dependencesExtra.size() != dependencesExtraReturned.size()
 };
 
 } /* namespace enums */

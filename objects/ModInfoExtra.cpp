@@ -12,39 +12,54 @@
 
 #include "../libs/libmodenums.hpp"
 
-#include "../libs/list.hpp"
+ //#include <cstdlib>
+//#include <cstring>
 
-#include <stdlib.h>
-#include <string.h>
+//#include <type_traits>
+
+#if defined(_WIN32) or defined(_WIN64)
+#include "../windows/pch.h"
+#endif // _WIN32 || _WIN64
 
 namespace llcpp {
 namespace modlibcore {
 
 ModInfoExtra::ModInfoExtra()
     : ModInfo()
-    , filename(LL_NULLPTR)
+    , filename()
     , statusID(enums::StatusID::NOT_INITIALITED)
-    , dependencesNotFound(new List<const ModBasicData*>())
+    , dependencesNotFound()
 {}
 ModInfoExtra::~ModInfoExtra() { this->clearSimple(); }
-ll_bool_t ModInfoExtra::operator==(const ModBasicData& dep) const {
+
+bool ModInfoExtra::operator==(const ModBasicData& dep) const {
     return this->modCore->getModBasicData()->operator==(dep);
 }
-ll_str_t ModInfoExtra::getFilename() const { return this->filename; }
-void ModInfoExtra::setFilename(ll_str_t name) { this->filename = name; }
+
+
+const std::string& ModInfoExtra::getFilename() const { return this->filename; }
+void ModInfoExtra::setFilename(const std::string& filename) {
+    this->filename = filename;
+}
+
 enums::StatusID ModInfoExtra::getStatusID() const { return this->statusID; }
 void ModInfoExtra::setStatusID(const enums::StatusID& status) { this->statusID = status; }
-List<const ModBasicData*>* ModInfoExtra::getDependencesNotFound() { return this->dependencesNotFound; }
+
+void ModInfoExtra::addDependencesNotFound(ModBasicData* data) {
+    this->dependencesNotFound.push_back(data);
+}
+
+const std::vector<const ModBasicData*>& ModInfoExtra::getDependencesNotFound() const {
+    return this->dependencesNotFound;
+}
 
 ModInfo* ModInfoExtra::extractBasicInfo() {
     this->clearSimple();
     return this;
 }
 void ModInfoExtra::clearSimple() {
-    if (this->filename) free(const_cast<char*>(this->filename));
-    if (this->dependencesNotFound) delete this->dependencesNotFound;
-    this->filename = LL_NULLPTR;
-    this->dependencesNotFound = LL_NULLPTR;
+    this->filename.clear();
+    this->dependencesNotFound.clear();
 }
 
 } /* namespace modlibcore */

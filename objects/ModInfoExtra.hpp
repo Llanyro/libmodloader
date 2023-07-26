@@ -8,12 +8,12 @@
 #ifndef LIBMOD_OBJECT_MODINFOEXTRA_HPP_
 #define LIBMOD_OBJECT_MODINFOEXTRA_HPP_
 
-#include "ModInfo.hpp"
-#include "../libs/libmodincludes.hpp"
+#include "../libs/libshare.hpp"
 
-// For lists
-template<class T, class Node = llcpp::util::node::Node<T>>
-using List as llcpp::util::list::linked::LinkedList<T, Node>;
+#include "ModInfo.hpp"
+
+#include <string>
+#include <vector>
 
 namespace llcpp {
 namespace modlibcore {
@@ -21,24 +21,24 @@ namespace enums { enum class StatusID; } /* namespace enums */
 
 class ModBasicData;
 
-class ModInfoExtra : public ModInfo {
+class LL_SHARED_LIB ModInfoExtra : public ModInfo {
 	protected:
-		ll_str_t filename;								// Path provided by folder
-		enums::StatusID statusID;						// Error Type
-		List<const ModBasicData*>* dependencesNotFound;	// Dependences not found
-		//List<const ModInfoExtra*>* dependencesFound;	// Dependences found
+		std::string filename;									// Path provided by folder
+		enums::StatusID statusID;								// Status Type
+		std::vector<const ModBasicData*> dependencesNotFound;	// Dependences not found
 	public:
 		ModInfoExtra();
-		virtual ~ModInfoExtra();
-		ll_bool_t operator==(const ModBasicData& dep) const;
+		~ModInfoExtra();
+		bool operator==(const ModBasicData& dep) const;
 
-		ll_str_t getFilename() const;
-		void setFilename(ll_str_t name);
-		//
+		const std::string& getFilename() const;
+		void setFilename(const std::string& filename);
+
 		enums::StatusID getStatusID() const;
 		void setStatusID(const enums::StatusID& status);
-		//
-		List<const ModBasicData*>* getDependencesNotFound();
+
+		void addDependencesNotFound(ModBasicData* data) ;
+		const std::vector<const ModBasicData*>& getDependencesNotFound() const;
 		// Once data extracted, this object will be invalid, so delete it
 		ModInfo* extractBasicInfo();
 		void clearSimple();

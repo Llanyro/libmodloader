@@ -8,20 +8,32 @@
 #ifndef LIBMOD_OBJECT_MODOBJECT_HPP_
 #define LIBMOD_OBJECT_MODOBJECT_HPP_
 
+#include "../libs/libshare.hpp"
+
 namespace llcpp {
 namespace modlibcore {
 
 class ModBasicData;
 
-class ModObject {
+/*
+*	This time this class is an "interface" or "abstract class"
+*	But the thing is, you can have a list of mod objects
+*	And delete them, cause this class has virtual destructor
+* 
+*	Also, you can inherit this class to give object indentifiers to know
+*		what object you are using if there are many objects and you manages them randomly
+*/
+class LL_SHARED_LIB ModObject {
 	protected:
 		const ModBasicData* modData;
 	public:
 		ModObject(const ModBasicData* modData);
-		~ModObject();
+		virtual ~ModObject();
+
 		const ModBasicData* getBaseModData() const;
-		// All objects should be clonable
-		virtual ModObject* clone() const = 0;
+		// All objects should be clonable ¿?
+		// By default this function returns nullptr
+		virtual ModObject* clone() const;
 };
 
 } /* namespace modlibcore */

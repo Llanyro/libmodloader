@@ -7,61 +7,51 @@
 
 #include "ModData.hpp"
 
-#include "../libs/vector.hpp"
+//#include <type_traits>
 
-#include <string.h>
+#if defined(_WIN32) or defined(_WIN64)
+#include "../windows/pch.h"
+#endif // _WIN32 || _WIN64
+
 
 namespace llcpp {
 namespace modlibcore {
 
-ModData::ModData(ll_str_t modName, ll_str_t modVersion, const len_t& numDependences, const len_t& numDependencesExtra) 
-	: ModBasicData(modName, modVersion)
-	, dependences(LL_NULLPTR)
-	, dependencesExtra(LL_NULLPTR)
-	, dependencesReturned(LL_NULLPTR)
-	, dependencesExtraReturned(LL_NULLPTR)
-{
-	if (numDependences > 0) {
-		this->dependences = new vector::Vector<ModBasicData*>(numDependences);
-		this->dependencesReturned = new vector::Vector<const ModInfo*>(numDependences);
-	}
-
-	if (numDependencesExtra > 0) {
-		this->dependencesExtra = new vector::Vector<ModBasicData*>(numDependences);
-		this->dependencesExtraReturned = new vector::Vector<const ModInfo*>(numDependences);
-	}
-}
+ModData::ModData(std::string&& modName, std::string&& modVersion)
+	: ModBasicData(std::move(modName), std::move(modVersion))
+	, dependencesRequired()
+	, dependencesOptional()
+	, dependencesRequiredReturned()
+	, dependencesOptionalReturned()
+{}
 ModData::~ModData() {
-	if (this->dependences) {
-		for (auto i : *this->dependences)
-			delete i;
-		delete this->dependences;
-	}
-	if (this->dependencesExtra) {
-		for (auto i : *this->dependencesExtra)
-			delete i;
-		delete this->dependencesExtra;
-	}
-	if (this->dependencesReturned) delete this->dependencesReturned;
-	if (this->dependencesExtraReturned) delete this->dependencesExtraReturned;
+	for (auto& i : this->dependencesRequired)
+		delete i;
+	for (auto& i : this->dependencesOptional)
+		delete i;
+}
 
-	this->dependences = LL_NULLPTR;
-	this->dependencesExtra = LL_NULLPTR;
-	this->dependencesReturned = LL_NULLPTR;
-	this->dependencesExtraReturned = LL_NULLPTR;
+void ModData::addDependencesRequired(ModBasicData* dependence) {
+	this->dependencesRequired.push_back(dependence);
 }
-const vector::Vector<ModBasicData*>* llcpp::modlibcore::ModData::getDependences() const {
-	return this->dependences;
+void ModData::addDependencesOptional(ModBasicData* dependence) {
+	this->dependencesOptional.push_back(dependence);
 }
-const vector::Vector<ModBasicData*>* llcpp::modlibcore::ModData::getDependencesExtra() const {
-	return this->dependencesExtra;
+
+const std::vector<ModBasicData*>& ModData::getDependencesRequired() const {
+	return this->dependencesRequired;
 }
-vector::Vector<const ModInfo*>* llcpp::modlibcore::ModData::getDependencesReturned() const {
-	return this->dependencesReturned;
+const std::vector<ModBasicData*>& ModData::getDependencesOptional() const {
+	return this->dependencesOptional;
 }
-vector::Vector<const ModInfo*>* llcpp::modlibcore::ModData::getDependencesExtraReturned() const {
-	return this->dependencesExtraReturned;
+
+std::vector<const ModInfo*>& ModData::getDependenceRequiredReturned() {
+	return this->dependencesRequiredReturned;
 }
+std::vector<const ModInfo*>& ModData::getDependenceOptionalReturned() {
+	return this->dependencesOptionalReturned;
+}
+
 
 } /* namespace modlibcore */
 } /* namespace llcpp */

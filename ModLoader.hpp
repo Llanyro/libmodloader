@@ -8,49 +8,41 @@
 #ifndef LIBMOD_MODLOADER_HPP_
 #define LIBMOD_MODLOADER_HPP_
 
-#include "libs/libtypes.hpp"
-#include "libs/libmodincludes.hpp"
+#include "libs/libshare.hpp"
+
+#include <string>
+#include <vector>
 
 namespace llcpp {
 namespace modlibcore {
-namespace enums { enum class OSSystem; } /* namespace enums */
 
 class ModInfo;
 class ModInfoExtra;
 
-// For event lists
-extern BasicEvent __modListsEvent__;	// Is used as extern cause i dont want to include here its header
-template<class T, BasicEvent* evn = &__modListsEvent__, class Node = llcpp::util::node::EventNode<T, evn>>
-using EvList as llcpp::util::list::linked::LinkedList<T, Node>;
-using ModEventList as EvList<ModInfoExtra*>;
-using ModVector as llcpp::util::list::vector::dynamic::Vector<ModInfo*>;
-
-class ModLoader {
+class LL_SHARED_LIB ModLoader {
 	protected:
-		ll_str_t path;				// Mod path folder
-		enums::OSSystem os;			// Os host
-		ModEventList* modsInfo;		// All mods loaded
-		ModEventList* modsInfoErr;	// All mods "loaded" that contains any error
+		std::string path;						// Mod path folder
+		std::vector<ModInfoExtra*> modsInfo;	// All mods loaded
+		std::vector<ModInfoExtra*> modsInfoErr;	// All mods "loaded" that contains any error
 	protected:
 		void loadMod();
 		void unloadMod();
 	public:
-		ModLoader(const enums::OSSystem& os, ll_str_t modFolderPath);
-		ModLoader(const enums::OSSystem& os);
+		ModLoader(std::string modFolderPath = "./mods");
 		~ModLoader();
 
 		// Loads all phases and returns number of error ocurred
-		ll_int64_t load();
+		std::size_t load();
 		//void reloadMod();
 		//void loadMod();
 		//void unloadMod();
 		void clearMods();
 
-		ModEventList* getLoadedMods();
-		ModEventList* getErrorMods();
+		const std::vector<const ModInfoExtra*>& getLoadedMods() const;
+		const std::vector<const ModInfoExtra*>& getErrorMods() const;
 
 		// Returns a fixed vector of mod info with minimal data used
-		ModVector* getModsToUse();
+		std::vector<const ModInfo*>&& getModsToUse();
 };
 
 } /* namespace modlibcore */
