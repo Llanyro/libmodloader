@@ -42,7 +42,7 @@ class LL_SHARED_LIB ModLoader {
 		const std::vector<const ModInfoExtra*>& getErrorMods() const;
 
 		// Returns a fixed vector of mod info with minimal data used
-		std::vector<const ModInfo*>&& getModsToUse();
+		void getModsToUse(std::vector<const ModInfo*>& v);
 };
 
 } /* namespace modlibcore */

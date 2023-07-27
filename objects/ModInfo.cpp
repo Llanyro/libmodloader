@@ -16,8 +16,8 @@ namespace llcpp {
 namespace modlibcore {
 
 ModInfo::ModInfo()
-    : modCore(nullptr)
-    , modHandle(nullptr)
+    : modHandle(nullptr)
+    , modCore(nullptr)
 {}
 ModInfo::~ModInfo() {
     if (this->modHandle) close_lib(this->modHandle);

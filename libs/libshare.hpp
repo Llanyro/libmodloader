@@ -14,7 +14,7 @@
 #if defined(LL_DLL_BUILD)
 #define LL_SHARED_LIB __declspec(dllexport)
 #else
-	//#define LL_SHARED_LIB __declspec(dllimport)
+	#define LL_SHARED_LIB __declspec(dllimport)
 #define LL_SHARED_LIB
 #endif
 #else
