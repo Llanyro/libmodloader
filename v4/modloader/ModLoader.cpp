@@ -31,7 +31,7 @@ std::vector<std::string> loadModFolder(ll_string_t modFolderPath, ll_string_t ex
 				auto a = entry.path().native();
 				l.push_back(std::string(a.begin(), a.end()));
 			}
-    return std::move(l);
+    return l;
 }
 ModInfoExtra* ModLoader::getModInfoEx(std::string& modName) const {
 	ModInfoExtra* infoExtra = new ModInfoExtra();
@@ -184,7 +184,7 @@ std::vector<const ModInfo*> ModLoader::getModsToUse() const {
 	std::vector<const ModInfo*> mods;
 	for (auto& i : this->modsInfo)
 		mods.push_back(i.second);
-	return std::move(mods);
+	return mods;
 }
 
 } /* namespace v4 */
