@@ -1,0 +1,6 @@
+[submodule "cityhash"]
+	path = cityhash
+	url = https://github.com/Llanyro/cityhash.git
+[submodule "llcppheaders"]
+	path = llcppheaders
+	url = https://github.com/Llanyro/llcppheaders.git
