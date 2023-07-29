@@ -43,7 +43,7 @@ class LL_SHARED_LIB ModCore {
 
 typedef ModCore* (*GetModCore)();
 constexpr ll_string_t GET_MOD_CORE = "getModCore";
-extern "C" LL_SHARED_LIB ModCore& getModCore();
+extern "C" LL_SHARED_LIB ModCore* getModCore();
 
 } /* namespace v4 */
 } /* namespace modlibcore */
