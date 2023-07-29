@@ -8,7 +8,7 @@
 #ifndef LIBMOD_MODBASICDATA_HPP_
 #define LIBMOD_MODBASICDATA_HPP_
 
-#include "../../llcppheaders/llanytypeslib.hpp"
+#include <llanytypeslib.hpp>
 
 namespace llcpp {
 namespace modlibcore {
@@ -29,7 +29,7 @@ class LL_SHARED_LIB ModBasicData {
 		ll_string_t getModName() const;
 		ll_string_t getModVersion() const;
 
-		ui128 hash() const;
+		ll_hash_t hash() const;
 };
 
 } /* namespace v4 */

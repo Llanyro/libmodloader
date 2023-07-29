@@ -8,7 +8,7 @@
 #ifndef LIBMOD_MODLOADER_HPP_
 #define LIBMOD_MODLOADER_HPP_
 
-#include "../../llcppheaders/llanytypeslib.hpp"
+#include <llanytypeslib.hpp>
 
 #include <string>
 #include <map>
@@ -23,7 +23,7 @@ class ModInfoExtra;
 
 class LL_SHARED_LIB ModLoader {
 	protected:
-		using ModMap = std::map<ui128, ModInfoExtra*>;
+		using ModMap = std::map<ll_hash_t, ModInfoExtra*>;
 		using ModVector = std::vector<ModInfoExtra*>;
 	protected:
 		ll_string_t path;			// Mod path folder
@@ -49,7 +49,7 @@ class LL_SHARED_LIB ModLoader {
         // All memory should be delete on close
 		void clearMods();
 
-		const std::map<ui128, ModInfoExtra*>& getLoadedMods() const;
+		const std::map<ll_hash_t, ModInfoExtra*>& getLoadedMods() const;
 		const std::vector<ModInfoExtra*>& getErrorMods() const;
 
 		// Returns a fixed vector of mod info with minimal data

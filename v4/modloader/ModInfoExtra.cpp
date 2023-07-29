@@ -25,7 +25,7 @@ const std::string& ModInfoExtra::getFilename() const { return this->filename; }
 void ModInfoExtra::setFilename(std::string&& filename) { this->filename = filename; }
 
 enums::StatusID ModInfoExtra::getStatusID() const { return this->statusID; }
-void ModInfoExtra::setStatusID(const enums::StatusID& status) { this->statusID = statusID; }
+void ModInfoExtra::setStatusID(const enums::StatusID& status) { this->statusID = status; }
 
 } /* namespace v4 */
 } /* namespace modlibcore */

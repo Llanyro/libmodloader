@@ -7,7 +7,8 @@
 
 #include "ModLoader.hpp"
 
-#include "../../llcppheaders/llexpresions.hpp"
+#include <llexpresions.hpp>
+
 
 #include "libfunctions.hpp"
 #include "libmodenums.hpp"
@@ -127,7 +128,7 @@ len_t ModLoader::load() {
 		if(this->vervoseLevel == 3)
 			fprintf(stdout, "Mod folder to analize: %s\n", modName.c_str());
 
-		ModInfoExtra* infoExtra = getModInfoEx(modName);
+		ModInfoExtra* infoExtra = this->getModInfoEx(modName);
 		if(infoExtra->getStatusID() != enums::StatusID::OK)
 			this->modsInfoErr.push_back(infoExtra);
 		else

@@ -8,7 +8,7 @@
 #ifndef LIBMOD_LIBFUNCTIONS_HPP_
 #define LIBMOD_LIBFUNCTIONS_HPP_
 
-#include "../../llcppheaders/llanytypeslib.hpp"
+#include <llanytypeslib.hpp>
 
 #if defined(WINDOWS_SYSTEM)
 #include <Windows.h>

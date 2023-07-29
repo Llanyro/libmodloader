@@ -8,7 +8,7 @@
 #ifndef LIBMOD_MODINFO_HPP_
 #define LIBMOD_MODINFO_HPP_
 
-#include "../../llcppheaders/llanytypeslib.hpp"
+#include <llanytypeslib.hpp>
 
 namespace llcpp {
 namespace modlibcore {

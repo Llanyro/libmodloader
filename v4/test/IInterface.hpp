@@ -8,16 +8,16 @@
 #ifndef LIBMOD_TEST_IINTERFACE_HPP_
 #define LIBMOD_TEST_IINTERFACE_HPP_
 
-#include "../objects/ModObject.hpp"
+#include "ModObject.hpp"
 
 namespace llcpp {
 namespace modlibcore {
+namespace v4 {
 namespace test {
 
 class IInterface : public ModObject {
     public:
-        IInterface(const ModBasicData* modData)
-            : ModObject(modData) {}
+        IInterface(const ModBasicData* modData) : ModObject(modData) {}
         virtual ~IInterface() {}
 
         virtual void printText() const = 0;
@@ -27,6 +27,7 @@ class IInterface : public ModObject {
 };
 
 } /* namespace test */
+} /* namespace v4 */
 } /* namespace modlibcore */
 } /* namespace llcpp */
 
