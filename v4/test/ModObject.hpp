@@ -28,13 +28,13 @@ class LL_SHARED_LIB ModObject {
 	protected:
 		const ModBasicData* modData;
 	public:
-		ModObject(const ModBasicData* modData) : modData(modData) {}
-		virtual ~ModObject() {}
+		ModObject(const ModBasicData* modData);
+		virtual ~ModObject();
 
-		const ModBasicData* getBaseModData() const { return this->modData; }
+		const ModBasicData* getBaseModData() const;
 		// All objects should be clonable
 		// By default this function returns nullptr
-		virtual ModObject* clone() const { return nullptr; }
+		virtual ModObject* clone() const;
 };
 
 } /* namespace test */
