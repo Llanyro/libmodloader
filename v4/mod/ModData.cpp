@@ -25,10 +25,10 @@ ModData::ModData(ll_string_t modName, ll_string_t modVersion)
 {}
 ModData::~ModData() {}
 
-void ModData::addDependence(const ModBasicData& data) { this->addDependence(data); }
+void ModData::addDependence(const ModBasicData& data) { this->dependences.push_back(data); }
 ///void ModData::addDependence(const ModBasicData& data) { this->addDependence(data.hash()); }
 //void ModData::addDependence(const ui128& data) { this->dependences.push_back(data); }
-void ModData::addOptionalDependence(const ModBasicData& data) { this->addDependence(data); }
+void ModData::addOptionalDependence(const ModBasicData& data) { this->optionalDependences.push_back(data); }
 ///void ModData::addOptionalDependence(const ModBasicData& data) { this->addDependence(data.hash()); }
 //void ModData::addOptionalDependence(const ui128& data) { this->optionalDependences.push_back(data); }
 void ModData::resizeOut() {
