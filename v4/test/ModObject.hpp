@@ -8,6 +8,8 @@
 #ifndef LIBMOD_TEST_MODOBJECT_HPP_
 #define LIBMOD_TEST_MODOBJECT_HPP_
 
+#include <llanytypeslib.hpp>
+
 namespace llcpp {
 namespace modlibcore {
 namespace v4 {
@@ -22,7 +24,7 @@ namespace test {
 *	Also, you can inherit this class to give object indentifiers to know
 *		what object you are using if there are many objects and you manages them randomly
 */
-class ModObject {
+class LL_SHARED_LIB ModObject {
 	protected:
 		const ModBasicData* modData;
 	public:
