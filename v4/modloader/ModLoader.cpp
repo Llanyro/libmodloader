@@ -120,7 +120,7 @@ len_t ModLoader::load() {
 	std::vector<std::string> mods =
         loadModFolder(
             this->path,
-            llcpp::header::expresions::extensions::DLL_EXTENSION_STR);
+            llcpp::header::expresions::extensions::DLL_EXTENSION_STR.str);
     
 
 	// Now we open mod to mod and store its data in class data
